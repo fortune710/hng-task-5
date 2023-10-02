@@ -54,13 +54,14 @@ async function transcribeLocalVideo(filePath) {
   
 
 
-router.post('/upload', upload.single('file'), async (req, res) => {
+router.post('/upload/:id', upload.single('file'), async (req, res) => {
     //const completeFile = await constructChunks(req);
+    const videoId = req.params.id;
     
     try {
         // If there is a file in the request, it's a standard upload
-        const videoPath = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
-        const savedPath = path.join(process.cwd(), `/uploads/${req.file.filename}`);
+        const videoPath = `${req.protocol}://${req.get('host')}/uploads/${videoId}.mp4`;
+        const savedPath = path.join(process.cwd(), `/uploads/${videoId}.mp4`);
 
         const transcript = await transcribeLocalVideo(savedPath)
 
@@ -72,9 +73,7 @@ router.post('/upload', upload.single('file'), async (req, res) => {
     }
     catch (e){
         return res.status(500).json({ message: "An error occured", error: e })
-    } finally {
-
-    }
+    } 
     
 })
 
